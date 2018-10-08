@@ -21,7 +21,7 @@ const getRemoteDB = (databaseUrl, ssl) => {
     dialectOptions: {
       ssl,
     },
-    //logging: false,
+    logging: false,
   })
 };
 

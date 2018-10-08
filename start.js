@@ -1,6 +1,10 @@
 require('babel-register')({
     presets: [ 'es2015' ]
 });
+if( process.argv.length > 2){
 
-// Import the rest of our application.
-module.exports = require('./server.js');
+    module.exports = require(process.argv[2])
+}
+else{
+    module.exports = require('./server.js');
+}
