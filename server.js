@@ -78,26 +78,42 @@ app.get('/login', (req, res) => {
     return res.status(401).send('Login failed')
   }
 
-  return db.models.user.findOne(whereClause)
+    return db.models.user.findOne(whereClause)
     .then((user) => {
-      if (user) {
-        if (user.validatePassword(password)) {
-          console.log('Login success: user', user.email)
-          req.session.user = user.email
-          req.session.admin = user.email == 'admin'
-          req.session.userId = user.id
-          //console.log(`/login session setup user=${req.session.user}, viewerId=${req.session.viewerId}, sessionID=${req.sessionID}`) // eslint-disable-line max-len
+        if (user) {
+            console.log("found user")
+            console.log(user.validatePassword)
+            user.validatePassword(password).then((validated)=> {
 
-          //delete user.dataValues.confirmationCode // eslint-disable-line no-param-reassign
-          return res.json(user)
-        }
-        console.log(`/login ERROR: verify for whereClause=${JSON.stringify(whereClause)}, user id=${user.id}, email=${user.email}`) // eslint-disable-line max-len
-        return res.status(401).send('login failed')
+
+                if(validated){
+                    console.log('Login success: user', user.email)
+                    req.session.user = user.email
+                    req.session.admin = user.email == 'admin'
+                    req.session.userId = user.id
+
+                    delete user.password
+                    return res.json(user)
+                }
+                else{
+                    console.log('login failed')
+                    return res.status(401).send('login failed')
+                }
+
+
+        })
+        .catch((err)=>{
+
+          console.log('/login ERROR: db error for whereClause', JSON.stringify(whereClause), JSON.stringify(error))
+          return res.status(401).send('login failed')
+        })
+
+
       }
-      console.log(`/login ERROR: player not found for whereClause=${JSON.stringify(whereClause)}`)
-      return res.status(401).send('login failed')
+
     })
     .catch((error) => {
+
       console.log('/login ERROR: db error for whereClause', JSON.stringify(whereClause), JSON.stringify(error))
       return res.status(401).send('login failed')
     })

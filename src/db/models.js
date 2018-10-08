@@ -33,13 +33,11 @@ const User = db.define('user',{
     underscored: true,
     freezeTableName: true,
     instanceMethods: {
-        // generatePasswordHash(password) {
-        //     return bcrypt.hash(password, bcrypt.genSaltSync(8));
-        // },
-        validatePassword(password) {
-            return bcrypt.compare(password, this.password);
+        validatePassword: async function(password) {
+            return await bcrypt.compare(password, this.password);
         }
     }
+
 });
 User.beforeCreate((user, options) => {
 
@@ -51,6 +49,7 @@ User.beforeCreate((user, options) => {
             throw new Error();
         });
 });
+
 
 const Post = db.define('post',{
      id: {
