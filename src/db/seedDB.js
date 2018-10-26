@@ -1,7 +1,8 @@
 
 import models from './models'
 // models.user
-models.User.sync({force: false}).then(()=> {
+const forceTableRecreation = false
+models.User.sync({force: forceTableRecreation}).then(()=> {
 
     console.log("Created User Table")
 
@@ -11,7 +12,7 @@ models.User.sync({force: false}).then(()=> {
         password:'admin'
     })
 })
-models.Post.sync({force: false}).then(()=> {
+models.Post.sync({force: forceTableRecreation}).then(()=> {
 
     console.log("Created Post Table")
 })

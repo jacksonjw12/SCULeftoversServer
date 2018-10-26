@@ -8,7 +8,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node start.js",
-    "seed" : "node start.js ./src/db/seedDB.js",
+    "seed": "node start.js ./src/db/seedDB.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/jacksonjw12/SCULeftoversServer#readme",
   "dependencies": {
+    "aws-sdk": "^2.343.0",
     "babel-preset-es2015": "6.24.1",
     "babel-register": "^6.26.0",
     "bcrypt": "^3.0.1",

@@ -15,6 +15,7 @@ type User {
 const query = `
   User: User
   userById(id: String!): User
+  getFeed: [Post]
 `
 const mutation = `
     updateStatus(
@@ -33,6 +34,10 @@ const resolvers = {
         },
         userById(root,{id}){
             return db.models.user.findById(id)
+        },
+        getFeed(root,args,context){
+            //TODO filter by expired/allergens
+            return db.models.post.findAll()
         }
     },
     Mutation: {

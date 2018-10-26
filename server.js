@@ -1,12 +1,23 @@
 var express = require('express');
+require('dotenv').config({ silent: true });
+let uuid = require('uuid');
+let AWS = require('aws-sdk');
+const s3 = new AWS.S3({
+    signatureVersion: 'v4',
+    region: 'us-east-2',
+    endpoint: 's3-us-east-2.amazonaws.com',
+});
+const bucket = process.env.BUCKET;
+const signedTimeout = 60*5;
 //var express_graphql = require('express-graphql');
-var { buildSchema } = require('graphql');
+let { buildSchema } = require('graphql');
 // GraphQL schema
 import { graphqlExpress, graphiqlExpress } from 'graphql-server-express'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import bodyParser from 'body-parser'
 import { makeExecutableSchema } from 'graphql-tools'
+
 import { schema, resolvers } from './src/db/schema/merge_schemas'
 
 import auth from './src/db/auth'
@@ -21,7 +32,16 @@ var root = {
     message: () => 'Hello World!'
 };
 
-
+// Test upload of a hello world for aws
+// var bucketName = 'sculeftoversjw';
+// var keyName = 'hello_world.txt';
+// var objectParams = {Bucket: bucketName, Key: keyName, Body: 'Hello World!'};
+// // Create object upload promise
+// var uploadPromise = new AWS.S3({apiVersion: '2006-03-01'}).putObject(objectParams).promise();
+// uploadPromise.then(
+//   function(data) {
+//     console.log("Successfully uploaded data to " + bucketName + "/" + keyName);
+//   });
 
 
 const bcrypt = require('bcrypt')
@@ -119,6 +139,22 @@ app.get('/login', (req, res) => {
     })
 })
 
+app.get('/requestImageUpload', (req,res) => {
+    //console.log(req.session)
+    if(req.session.user === undefined){
+        res.status(401).send(JSON.stringify({'err':'Login Required For Image Upload'}))
+    }
+    else{
+        let key = req.session.user + "/" + uuid.v4() + '.jpg'
+        let url =s3.getSignedUrl('putObject', {
+            Bucket: bucket,
+            Key: key,
+            Expires: signedTimeout
+        })
+         res.send(JSON.stringify({'url':url,'timeout':signedTimeout,'key':key}))
+    }
+
+})
 app.get('/logout', (req, res) => {
   req.session.destroy()
   res.send('logged out')
