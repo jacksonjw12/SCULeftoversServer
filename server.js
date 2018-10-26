@@ -146,10 +146,14 @@ app.get('/requestImageUpload', (req,res) => {
     }
     else{
         let key = req.session.user + "/" + uuid.v4() + '.jpg'
+        let conditions = [
+	     {"acl": "public-read"}
+	     ]
         let url =s3.getSignedUrl('putObject', {
             Bucket: bucket,
             Key: key,
-            Expires: signedTimeout
+            Expires: signedTimeout,
+            ACL: "public-read"
         })
          res.send(JSON.stringify({'url':url,'timeout':signedTimeout,'key':key}))
     }
