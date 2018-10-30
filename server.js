@@ -22,6 +22,7 @@ import { schema, resolvers } from './src/db/schema/merge_schemas'
 
 import auth from './src/db/auth'
 import db from './src/db/dbConnect'
+import models from './src/db/models'
 // var schema = buildSchema(`
 //     type Query {
 //         message: String
@@ -159,6 +160,20 @@ app.get('/requestImageUpload', (req,res) => {
     }
 
 })
+
+app.get('/signup', (req,res) => {
+  const {
+    email,
+    password,
+  } = req.query
+  console.log(req.query);
+  models.User.create({
+    email: email,
+    status:'ACTIVE',
+    password: password
+  })
+})
+
 app.get('/logout', (req, res) => {
   req.session.destroy()
   res.send('logged out')
