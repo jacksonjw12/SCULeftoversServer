@@ -1,10 +1,14 @@
 import db from '../dbConnect'
+import GraphQLJSON from 'graphql-type-json'
 require('../models')
 
 const typeDefinitions = `
+scalar JSON
+
 type Post {
   id: String!
   title: String
+  data: JSON
   createdAt: String
   updatedAt: String
   pictureURL: String
@@ -27,6 +31,7 @@ const mutation = `
     ): Post
 `
 const resolvers = {
+    JSON: GraphQLJSON,
     Query: {
         postById(root,{id}){
             return db.models.post.findById(id)

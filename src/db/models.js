@@ -69,6 +69,9 @@ const Post = db.define('post',{
         type: Sequelize.TEXT,
         defaultValue: 'No Title',
     },
+    data: {
+         type: Sequelize.JSONB,
+    },
     pictureURL: {
         type: Sequelize.STRING,
         field: 'picture_url',
