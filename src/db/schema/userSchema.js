@@ -37,7 +37,9 @@ const resolvers = {
         },
         getFeed(root,args,context){
             //TODO filter by expired/allergens
-            return db.models.post.findAll()
+            return db.models.post.findAll({order: [
+            ['createdAt', 'DESC'],
+        ]})
         }
     },
     Mutation: {
